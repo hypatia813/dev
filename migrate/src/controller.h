@@ -5,31 +5,32 @@
 #include <string>
 #include <vector>
 #include "info.h"
+#include "log.h"
+#include "db.h"
+#include "common.h"
 
 using namespace std;
-
-class VMController {
-public:
-  bool check(const string &vm_uuid);
-  int start_work(const string &vm_uuid);
-  int split_jobs(const string &vm_uuid);
-  void dispather_jobs(const string &vm_uuid);
-  int end_work(const string &vm_uuid);
-  int show_jobs(const string &vm_uuid);
-
-private:
-  VirturalMathineInfo * create_vm(const string &vm_uuid);
-  int get_disks(const string & vm_uuid, vector<DiskInfo *> disks);
-  vector<JobInfo *> append_jobs;
-};
 
 
 class JobController {
 public:
-  int handle();
+  int init() {return 0;}
+  int exit() {return 0;}
 
 private:
-  vector<JobInfo *> running_jobs;
+  //vector<JobInfo *> running_jobs;
+};
+
+class StateController {
+public:
+  int init() {return 0;}
+  int exit() {return 0;}
+};
+
+class HeartBeatController {
+public:
+  int init() {return 0;}
+  int exit() {return 0;}
 };
 
 #endif

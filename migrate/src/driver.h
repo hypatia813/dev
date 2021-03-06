@@ -6,24 +6,24 @@
 
 using namespace std;
 
-class Driver : {
+class Driver {
 public:
   virtual void handle() = 0;
 };
 
-class QuemDriver : Driver {
+class QuemDriver : public Driver {
 public:
-  void handle();
+  void handle() {}
 };
 
-class RBDDriver : Driver {
+class RBDDriver : public Driver {
 public:
   string pool_name;
   string rbd_name;
 
 public:
-  void handle();
-  void create_volume();
+  void handle() {}
+  void create_volume() {}
 };
 
 #endif
