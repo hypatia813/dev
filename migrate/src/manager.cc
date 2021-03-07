@@ -7,8 +7,7 @@
 #include "log.h"
 #include "db.h"
 #include "common.h"
-#include "network.h"
-
+#include "admin_socket.h"
 
 enum {
   MIGRATE_STATUS_STARTING,
@@ -23,18 +22,15 @@ MigrateManager::init() {
   status = MIGRATE_STATUS_STARTING;
 
   // 初始化条件变量
-  logger = Logger::get_instance();
-  logger->init();
-
   // 加载配置文件
   conf = Configuer::get_instance();
   conf->load("/etc/migrate.ini");
 
   // 初始化数据库
-  db = MySQL::get_instance();
+  db = new MySQL();
   db->init();
   db->connect();
-  network->init();
+  admin->init();
   heartbeat_controller->init();
   job_controller->init();
   state_controller->init();
@@ -50,11 +46,10 @@ void
 MigrateManager::exit() {
   state_controller->exit();
   job_controller->exit();
-  network->exit();
+  admin->exit();
   db->disconnect();
   db->exit();
   status = MIGRATE_STATUS_STOPPING;
-  logger->exit();
 
   // 删除资源
 
@@ -67,6 +62,33 @@ void MigrateManager::wait() {
     }
 
   return;
+}
+
+int
+MigrateManager::message_paster(char *buff, message_t *message) {
+  int rc = 0;
+
+  return rc;
+}
+
+int MigrateManager::dispather(op_t &op) {
+  int rc = 0;
+
+  // 根据 op 中的虚拟机id 获取 磁盘信息
+  query_disksinfo();
+
+  // 封装 job
+  //
+  job_controller->submit();
+
+  return rc;
+}
+
+int MigrateManager::query_disksinfo() {
+  int rc = 0;
+  string cmd = "";
+  db->excute(cmd);
+  return 0;
 }
 
 #if 0

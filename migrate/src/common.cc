@@ -27,6 +27,18 @@ void WaitEvent::signal() {
   pthread_mutex_unlock(&_lock);
 }
 
+void Thread::init(void * (*func)(void* args),
+        void* args) {
+    pthread_t ntid;
+    pthread_create(&ntid, NULL, func, args);
+}
+
+
+void Thread::exit() {
+  return;
+}
+
+
 void ThreadPool::init(int threads_num, void * (*func)(void* args),
         void* args) {
 
@@ -34,7 +46,6 @@ void ThreadPool::init(int threads_num, void * (*func)(void* args),
   for (int i = 0; i < threads_num; i++) {
     pthread_t ntid;
     pthread_create(&ntid, NULL, func, args);
-    pool_threads.push_back(ntid);
   }
 }
 
@@ -42,7 +53,7 @@ void ThreadPool::exit() {
   return;
 }
 
-int ThreadPool::enqueue(const Task *task) {
+int ThreadPool::enqueue(job_t *task) {
   int size = 0;
   pthread_mutex_lock(&_lock);
   tasks.push_back(task);
@@ -52,8 +63,8 @@ int ThreadPool::enqueue(const Task *task) {
   return size;
 }
 
-const Task* ThreadPool::dequeue() {
-  const Task* task;
+job_t* ThreadPool::dequeue() {
+  job_t* task;
   pthread_mutex_lock(&_lock);
   while(tasks.empty()) {
     pthread_cond_wait(&_cond, &_lock);

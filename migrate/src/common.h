@@ -6,6 +6,7 @@
 #include <list>
 #include <memory>
 #include <mutex>
+#include "info.h"
 
 using namespace std;
 
@@ -48,7 +49,21 @@ public:
   
 };
 
+typedef struct op {
+  int op;
+  long long vm_uuid;
+  string remote_ip;
+}op_t;
+
+typedef struct message {
+  int magic;
+  op_t op;
+}message_t;
+
 class Thread {
+public:
+  void init(void * (*func)(void* arg), void* arg=nullptr);
+  void exit();
 };
 
 class ThreadPool {
@@ -57,12 +72,11 @@ public:
   ~ThreadPool() {}
   void init(int num_threads, void * (*func)(void* arg), void* arg=nullptr);
   void exit();
-  int enqueue(const Task * task);
-  const Task * dequeue();
+  int enqueue(job_t * task);
+  job_t * dequeue();
 
 private:
-  list<const Task *> tasks;
-  vector<pthread_t>pool_threads;
+  list<job_t *> tasks;
   int threads_num;
   bool _signaled = false;
   pthread_mutex_t _lock;

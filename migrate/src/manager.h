@@ -13,28 +13,32 @@
 #include "log.h"
 #include "db.h"
 #include "common.h"
-#include "network.h"
+#include "admin_socket.h"
 
 using namespace std;
 
 class MigrateManager {
 public:
+  WaitEvent _event;
+
+public:
   int init();
   void wait();
   void exit();
-
-public:
-  WaitEvent _event;
+  int message_paster(char *buff, message_t *message);
+  int dispather(op_t &op);
 
 private:
-  Logger *logger;
   Configuer *conf;
-  NetWorkStack *network;
+  AdminSocket *admin;
   DB *db;
   StateController *state_controller;
   JobController *job_controller;
   HeartBeatController *heartbeat_controller;
   int status;
+
+private:
+  int query_disksinfo();
 
 #if 0
   bool check(const string &vm_uuid);

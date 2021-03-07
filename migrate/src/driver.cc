@@ -1,32 +1,22 @@
 #include "driver.h"
 
-#if 0
-void execute(char *cmd, ) {
-  FILE *fp;
-  char line[1024] = {};
+void QuemDriver::copy(DiskInfo *disk) {
+}
 
-  if ((fp = popen(cmd, "r")) == NULL) {
-    cout << "error" << endl;
-    return;
+void RBDDriver::copy(DiskInfo *disk) {
+}
+
+void RBDDriver::create(string remote_ip, string pool_name, string rbd_name) {
+}
+
+Driver * get_copy_driver(int disk_status) {
+  Driver * driver = nullptr;
+
+  if (disk_status == DISK_STATTUE_IDE) {
+    driver = new RBDDriver();
+  } else {
+    driver = new QuemDriver();
   }
-  while (fgets(line, sizeof(line)-1, fp) != NULL){
-    cout << line ;
-  }
-
-  return;
+  return driver;
 }
-
-int
-RBDDriver::create_volume() {
-  int rc = 0;
-
-  return rc;
-}
-
-int
-RBDDriver::handle() {
-  int rc = 0;
-  return rc;
-}
-#endif
 

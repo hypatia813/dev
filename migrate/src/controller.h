@@ -11,20 +11,26 @@
 
 using namespace std;
 
-
 class JobController {
 public:
-  int init() {return 0;}
-  int exit() {return 0;}
-
+  int init();
+  int exit();
+  void submit();
 private:
+  static ThreadPool _pool;
   //vector<JobInfo *> running_jobs;
+private:
+  static void *entry(void *arg);
 };
 
 class StateController {
 public:
-  int init() {return 0;}
-  int exit() {return 0;}
+  int init();
+  int exit();
+private:
+  Thread _thread;
+private:
+  static void *entry(void *arg);
 };
 
 class HeartBeatController {
